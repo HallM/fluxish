@@ -4,6 +4,7 @@ class Fluxish {
     this._writableContext = {stores: {}, actions: {}};
     this._readOnlyContext = {stores: {}, actions: {}};
     this._listeners = {};
+    this._actionhooks = {pre: [], post: []};
   }
 
   getContext() {
@@ -49,15 +50,16 @@ class Fluxish {
     }
   }
 
-  listen(storeName, listener) {
-    const storeListeners = this._listeners[storeName];
-    if (storeListeners.indexOf(listener) === -1) {
-      storeListeners.push(listener);
-    }
+  addPreHook(hook) {
+    return _addHook(this._actionhooks.pre, listener);
+  }
 
-    return () => {
-      storeListeners.splice(storeListeners.indexOf(listener), 1);
-    };
+  addPostHook(hook) {
+    return _addHook(this._actionhooks.post, listener);
+  }
+
+  listen(storeName, listener) {
+    return _addHook(this._listeners[storeName], listener);
   }
 }
 
@@ -79,8 +81,20 @@ function _wrapGetter(fn, storeName, ctx) {
   };
 }
 
-function _wrapAction(fn) {
+function _wrapAction(fn, fnName) {
   return (...params) => {
-    return fn(this._writableContext, ...params);
+    this._actionhooks.pre.forEach(hook => hook(this._readOnlyContext, fnName, ...params));
+    fn(this._writableContext, ...params);
+    this._actionhooks.post.forEach(hook => hook(this._readOnlyContext, fnName, ...params));
+  };
+}
+
+function _addHook(hooks, fn) {
+  if (hooks.indexOf(fn) === -1) {
+    hooks.push(fn);
+  }
+
+  return () => {
+    hooks.splice(hooks.indexOf(fn), 1);
   };
 }
