@@ -32,10 +32,10 @@ class Fluxish {
         }
 
         for (const funtionName in store.getters) {
-          storeReadContext[funtionName] = this._createGetterFuncWrapper(store.getters[funtionName], storeName);
+          const wrappedFunction = this._createGetterFuncWrapper(store.getters[funtionName], storeName);
+          storeReadContext[funtionName] = wrappedFunction;
+          storeWriteContext[funtionName] = wrappedFunction;
         }
-
-        storeWriteContext = Object.assign(storeWriteContext, storeReadContext);
 
         this._writableContext.stores[storeName] = storeWriteContext;
         this._readOnlyContext.stores[storeName] = storeReadContext;
