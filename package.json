@@ -1,0 +1,25 @@
+{
+  "name": "fluxish",
+  "version": "0.0.1",
+  "description": "A tiny Flux-inspired unidirectional data management",
+  "main": "lib/fluxish.js",
+  "jsnext:main": "src/fluxish.js",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "babel": "^5.8.21"
+  },
+  "scripts": {
+    "build": "babel src --out-dir lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Crazy50/fluxish"
+  },
+  "author": "Matthew Hall",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Crazy50/fluxish/issues"
+  },
+  "homepage": "https://github.com/Crazy50/fluxish"
+}
